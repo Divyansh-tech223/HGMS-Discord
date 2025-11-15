@@ -1,11 +1,12 @@
 /*
   This is our NEW JavaScript file.
-  It uses Supabase to handle real user accounts.
+  It uses "polling" (a timer) instead of real-time replication.
 */
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    // Note: The '_supabase' object is created in index.html
+    let currentUser = null;
+    let messagePolling = null; // This will hold our timer
     
     // --- Get all the HTML elements ---
     const authContainer = document.getElementById('auth-container');
@@ -30,6 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const showRegisterLink = document.getElementById('show-register-link');
     const showLoginLink = document.getElementById('show-login-link');
     
+    // --- CHAT ELEMENTS ---
+    const userEmailDisplay = document.getElementById('user-email-display');
+    const messagesContainer = document.getElementById('messages-container');
+    const messageForm = document.getElementById('message-form');
+    const messageInput = document.getElementById('message-input');
+    
     // --- Show/Hide Functions ---
     const showApp = () => {
         authContainer.classList.add('hidden');
@@ -43,7 +50,6 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.classList.add('hidden');
         loginError.classList.add('hidden');
         registerError.classList.add('hidden');
-        // Clear forms on logout
         loginEmail.value = '';
         loginPassword.value = '';
         registerEmail.value = '';
@@ -68,22 +74,15 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const email = registerEmail.value;
         const password = registerPassword.value;
-
-        // Supabase sign up
-        const { data, error } = await _supabase.auth.signUp({
-            email: email,
-            password: password,
-        });
+        const { data, error } = await _supabase.auth.signUp({ email, password });
 
         if (error) {
             registerError.textContent = error.message;
             registerError.classList.remove('hidden');
         } else {
-            // Success! Supabase will send a confirmation email.
-            // For now, we'll just log them in, but you should check your email!
+            alert('Success! Check your email to confirm your account.'); // Or not, if you turned it off
             registerForm.classList.add('hidden');
             loginForm.classList.remove('hidden');
-            alert('Success! Please check your email to confirm your account.');
         }
     });
     
@@ -92,42 +91,117 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const email = loginEmail.value;
         const password = loginPassword.value;
-
-        // Supabase sign in
-        const { data, error } = await _supabase.auth.signInWithPassword({
-            email: email,
-            password: password,
-        });
+        const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
 
         if (error) {
             loginError.textContent = error.message;
             loginError.classList.remove('hidden');
         } else {
-            // Success! onAuthStateChange will handle showing the app
             console.log('Logged in user:', data.user);
         }
     });
     
     // --- Handle REAL Logout ---
     logoutButton.addEventListener('click', async () => {
-        const { error } = await _supabase.auth.signOut();
-        if (error) {
-            console.error('Error logging out:', error.message);
-        }
+        await _supabase.auth.signOut();
     });
 
     // --- Listen for Auth State Changes ---
-    // This runs when the page loads, and whenever someone logs in or out.
     _supabase.auth.onAuthStateChange((_event, session) => {
         if (session && session.user) {
             // User is signed in!
-            console.log('Auth state changed: Logged in', session.user);
+            currentUser = session.user; // Save the user
+            userEmailDisplay.textContent = `(Logged in as: ${currentUser.email})`;
             showApp();
+            
+            // --- NEW: Load messages and start polling ---
+            loadMessages(); // Load messages once
+            
+            // Stop any old timer
+            if (messagePolling) clearInterval(messagePolling); 
+            
+            // Start a new timer to check for messages every 3 seconds
+            messagePolling = setInterval(loadMessages, 3000); 
+            
         } else {
             // User is signed out.
-            console.log('Auth state changed: Logged out');
+            currentUser = null;
+            userEmailDisplay.textContent = '';
             showAuth();
+            
+            // --- NEW: Stop the timer when logged out ---
+            if (messagePolling) clearInterval(messagePolling);
+            messagesContainer.innerHTML = ''; // Clear messages from screen
         }
     });
+    
+    // --- Handle Sending a Message ---
+    messageForm.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Stop the page from reloading
+        
+        const content = messageInput.value; // Get the text
+        
+        if (content && currentUser) {
+            // Send the message to the 'messages' table in Supabase
+            const { error } = await _supabase.from('messages').insert({
+                content: content,
+                user_email: currentUser.email
+            });
+            
+            if (error) {
+                console.error('Error sending message:', error.message);
+            } else {
+                messageInput.value = ''; // Clear the input box
+                // We'll just wait for the poll to pick up the new message
+            }
+        }
+    });
+    
+    // --- A helper function to display a single message ---
+    // (This is the same as before)
+    const displayMessage = (message) => {
+        const messageElement = document.createElement('div');
+        messageElement.classList.add('message');
+        
+        const userEmailElement = document.createElement('strong');
+        userEmailElement.textContent = `${message.user_email}: `; 
+        
+        const contentElement = document.createElement('span');
+        contentElement.textContent = message.content;
+        
+        messageElement.appendChild(userEmailElement);
+        messageElement.appendChild(contentElement);
+        messagesContainer.appendChild(messageElement);
+    };
+    
+    // --- Load all messages ---
+    const loadMessages = async () => {
+        
+        // Get all messages from the 'messages' table
+        const { data: messages, error } = await _supabase
+            .from('messages')
+            .select('*')
+            .order('created_at', { ascending: true }); // Get oldest first
+            
+        if (error) {
+            console.error('Error loading messages:', error.message);
+        } else {
+            // --- NEW: Only redraw if needed ---
+            // A simple check: if the number of messages is different
+            // This stops the chat from "flashing" every 3 seconds
+            const currentMessageCount = messagesContainer.children.length;
+            if (messages.length !== currentMessageCount) {
+                
+                messagesContainer.innerHTML = ''; // Clear old messages
+                messages.forEach(displayMessage); // Display each message
+                
+                // Auto-scroll to the bottom
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+        }
+    };
+    
+    // --- REMOVED ---
+    // The listenForMessages() function has been completely removed.
 
 });
