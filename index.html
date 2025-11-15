@@ -4,19 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discord Layout</title>
-    <!-- We are still loading the same style.css file -->
+
     <link rel="stylesheet" href="style.css">
+
 </head>
 <body>
 
-    <!-- 
-      Part 1: The Authentication Container 
-      This is shown first, and hidden after login.
-    -->
     <div id="auth-container">
         <div class="auth-box">
-            
-            <!-- Login Form (Visible by default) -->
+
             <form id="login-form" class="auth-form">
                 <h1>Welcome Back!</h1>
                 <p id="login-error" class="auth-error hidden"></p>
@@ -28,7 +24,6 @@
                 </p>
             </form>
 
-            <!-- Register Form (Hidden by default) -->
             <form id="register-form" class="auth-form hidden">
                 <h1>Create an Account</h1>
                 <p id="register-error" class="auth-error hidden"></p>
@@ -44,23 +39,16 @@
     </div>
 
 
-    <!-- 
-      Part 2: The Main App Container
-      This is your Discord layout. It's hidden first, and shown after login.
-    -->
     <div id="app-container" class="app-layout hidden">
-        
-        <!-- 1. Server List Column -->
+
         <div class="server-list">
             <div class="server-icon" title="My Server">MS</div>
             <div class="server-icon" title="Gaming">G</div>
             <div class="server-icon" title="Study Group">S</div>
-            
-            <!-- This is the new "Logout" button -->
+
             <button id="logout-button" title="Logout">Out</button>
         </div>
 
-        <!-- 2. Channel List Column -->
         <div class="channel-area">
             <div class="server-name">My First Server</div>
             <div class="channel-list">
@@ -70,7 +58,6 @@
             </div>
         </div>
 
-        <!-- 3. Chat Area Column -->
         <div class="chat-area">
             <div class="chat-header"># general</div>
             <div class="chat-messages">
@@ -91,10 +78,6 @@
 
     </div>
 
-    <!-- 
-      This is the NEW JavaScript file. 
-      It MUST be at the end of the <body>.
-    -->
     <script src="app.js"></script>
 
 </body>
