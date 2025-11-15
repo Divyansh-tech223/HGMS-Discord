@@ -4,20 +4,63 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discord Layout</title>
-    
+    <!-- We are still loading the same style.css file -->
     <link rel="stylesheet" href="style.css">
-    
 </head>
 <body>
 
-    <div class="app-layout">
+    <!-- 
+      Part 1: The Authentication Container 
+      This is shown first, and hidden after login.
+    -->
+    <div id="auth-container">
+        <div class="auth-box">
+            
+            <!-- Login Form (Visible by default) -->
+            <form id="login-form" class="auth-form">
+                <h1>Welcome Back!</h1>
+                <p id="login-error" class="auth-error hidden"></p>
+                <input id="login-email" type="text" placeholder="Username (just type 'test')">
+                <input id="login-password" type="password" placeholder="Password (just type 'test')">
+                <button type="submit">Login</button>
+                <p class="auth-toggle-link">
+                    Need an account? <span id="show-register-link">Register</span>
+                </p>
+            </form>
+
+            <!-- Register Form (Hidden by default) -->
+            <form id="register-form" class="auth-form hidden">
+                <h1>Create an Account</h1>
+                <p id="register-error" class="auth-error hidden"></p>
+                <input id="register-email" type="text" placeholder="Username">
+                <input id="register-password" type="password" placeholder="Password">
+                <button type="submit">Register</button>
+                <p class="auth-toggle-link">
+                    Already have an account? <span id="show-login-link">Login</span>
+                </p>
+            </form>
+
+        </div>
+    </div>
+
+
+    <!-- 
+      Part 2: The Main App Container
+      This is your Discord layout. It's hidden first, and shown after login.
+    -->
+    <div id="app-container" class="app-layout hidden">
         
+        <!-- 1. Server List Column -->
         <div class="server-list">
             <div class="server-icon" title="My Server">MS</div>
             <div class="server-icon" title="Gaming">G</div>
             <div class="server-icon" title="Study Group">S</div>
+            
+            <!-- This is the new "Logout" button -->
+            <button id="logout-button" title="Logout">Out</button>
         </div>
 
+        <!-- 2. Channel List Column -->
         <div class="channel-area">
             <div class="server-name">My First Server</div>
             <div class="channel-list">
@@ -27,6 +70,7 @@
             </div>
         </div>
 
+        <!-- 3. Chat Area Column -->
         <div class="chat-area">
             <div class="chat-header"># general</div>
             <div class="chat-messages">
@@ -37,15 +81,21 @@
                     <strong>User2:</strong> <span>It's built with HTML and CSS.</span>
                 </div>
                 <div class="message">
-                    <strong>Me:</strong> <span>There is no JavaScript or server, so it's not functional, but it's a great start!</span>
+                    <strong>Me:</strong> <span>Now it has a fake login system with JavaScript!</span>
                 </div>
             </div>
             <div class="chat-input-box">
-                <input type="text" placeholder="Message #general (this input doesn't work)">
+                <input type="text" placeholder="Message #general (this input still doesn't work)">
             </div>
         </div>
 
     </div>
+
+    <!-- 
+      This is the NEW JavaScript file. 
+      It MUST be at the end of the <body>.
+    -->
+    <script src="app.js"></script>
 
 </body>
 </html>
