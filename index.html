@@ -59,30 +59,27 @@
         </div>
 
         <div class="chat-area">
-            <div class="chat-header"># general</div>
-            <div class="chat-messages">
-                <div class="message">
-                    <strong>User1:</strong> <span>Hey! This is a static layout.</span>
-                </div>
-                <div class="message">
-                    <strong>User2:</strong> <span>It's built with HTML and CSS.</span>
-                </div>
-                <div class="message">
-                    <strong>Me:</strong> <span>Now it has a REAL login system with Supabase!</span>
-                </div>
+            <div class="chat-header">
+                # general
+                <span id="user-email-display" style="font-weight: normal; color: #72767d; margin-left: 10px;"></span>
             </div>
+            
+            <div id="messages-container" class="chat-messages">
+                </div>
+            
             <div class="chat-input-box">
-                <input type="text" placeholder="Message #general (this input still doesn't work)">
+                <form id="message-form">
+                    <input id="message-input" type="text" placeholder="Message #general" required>
+                </form>
             </div>
         </div>
 
     </div>
 
     <script>
-      const SUPABASE_URL = 'https://npcoundkqshdqdckmhst.supabase.co';
-      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wY291bmRrcXNoZHFkY2ttaHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMjgwNDcsImV4cCI6MjA3ODgwNDA0N30.LLf4XHoNi2kOuXv2znNKd3XNM6jQBaxguxkqLoER7zo';
+      const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE'; // Make sure this is still your URL
+      const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // Make sure this is still your key
 
-      // This creates your Supabase "client"
       const { createClient } = supabase;
       const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     </script>
