@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Discord Layout</title>
-    
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
 </head>
 <body>
@@ -16,8 +17,8 @@
             <form id="login-form" class="auth-form">
                 <h1>Welcome Back!</h1>
                 <p id="login-error" class="auth-error hidden"></p>
-                <input id="login-email" type="text" placeholder="Username (just type 'test')">
-                <input id="login-password" type="password" placeholder="Password (just type 'test')">
+                <input id="login-email" type="email" placeholder="Email" required>
+                <input id="login-password" type="password" placeholder="Password" required>
                 <button type="submit">Login</button>
                 <p class="auth-toggle-link">
                     Need an account? <span id="show-register-link">Register</span>
@@ -27,8 +28,8 @@
             <form id="register-form" class="auth-form hidden">
                 <h1>Create an Account</h1>
                 <p id="register-error" class="auth-error hidden"></p>
-                <input id="register-email" type="text" placeholder="Username">
-                <input id="register-password" type="password" placeholder="Password">
+                <input id="register-email" type="email" placeholder="Email" required>
+                <input id="register-password" type="password" placeholder="Password (min. 6 characters)" required>
                 <button type="submit">Register</button>
                 <p class="auth-toggle-link">
                     Already have an account? <span id="show-login-link">Login</span>
@@ -45,7 +46,6 @@
             <div class="server-icon" title="My Server">MS</div>
             <div class="server-icon" title="Gaming">G</div>
             <div class="server-icon" title="Study Group">S</div>
-            
             <button id="logout-button" title="Logout">Out</button>
         </div>
 
@@ -68,7 +68,7 @@
                     <strong>User2:</strong> <span>It's built with HTML and CSS.</span>
                 </div>
                 <div class="message">
-                    <strong>Me:</strong> <span>Now it has a fake login system with JavaScript!</span>
+                    <strong>Me:</strong> <span>Now it has a REAL login system with Supabase!</span>
                 </div>
             </div>
             <div class="chat-input-box">
@@ -77,6 +77,15 @@
         </div>
 
     </div>
+
+    <script>
+      const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+      const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
+
+      // This creates your Supabase "client"
+      const { createClient } = supabase;
+      const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    </script>
 
     <script src="app.js"></script>
 
