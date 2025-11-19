@@ -30,7 +30,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Links to switch between forms
     const showRegisterLink = document.getElementById('show-register-link');
-    const showLoginLink =.getElementById('show-login-link');
+    // *** THIS IS THE FIX ***
+    const showLoginLink = document.getElementById('show-login-link');
     
     // --- CHAT ELEMENTS ---
     const userDisplay = document.getElementById('user-display'); // *** RENAMED ***
