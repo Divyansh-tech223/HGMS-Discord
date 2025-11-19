@@ -28,6 +28,9 @@
             <form id="register-form" class="auth-form hidden">
                 <h1>Create an Account</h1>
                 <p id="register-error" class="auth-error hidden"></p>
+                
+                <input id="register-display-name" type="text" placeholder="Display Name" required>
+                
                 <input id="register-email" type="email" placeholder="Email" required>
                 <input id="register-password" type="password" placeholder="Password (min. 6 characters)" required>
                 <button type="submit">Register</button>
@@ -61,7 +64,7 @@
         <div class="chat-area">
             <div class="chat-header">
                 # general
-                <span id="user-email-display" style="font-weight: normal; color: #72767d; margin-left: 10px;"></span>
+                <span id="user-display" style="font-weight: normal; color: #72767d; margin-left: 10px;"></span>
             </div>
             
             <div id="messages-container" class="chat-messages">
@@ -77,8 +80,8 @@
     </div>
 
     <script>
-      const SUPABASE_URL = 'https://npcoundkqshdqdckmhst.supabase.co';
-      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wY291bmRrcXNoZHFkY2ttaHN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjMyMjgwNDcsImV4cCI6MjA3ODgwNDA0N30.LLf4XHoNi2kOuXv2znNKd3XNM6jQBaxguxkqLoER7zo';
+      const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE';
+      const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE';
 
       const { createClient } = supabase;
       const _supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
