@@ -1,12 +1,12 @@
 /*
   This is our NEW JavaScript file.
-  It uses "polling" (a timer) instead of real-time replication.
+  It now includes Display Name logic.
 */
 
 document.addEventListener('DOMContentLoaded', () => {
     
     let currentUser = null;
-    let messagePolling = null; // This will hold our timer
+    let messagePolling = null; 
     
     // --- Get all the HTML elements ---
     const authContainer = document.getElementById('auth-container');
@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginPassword = document.getElementById('login-password');
     const registerEmail = document.getElementById('register-email');
     const registerPassword = document.getElementById('register-password');
+    const registerDisplayName = document.getElementById('register-display-name'); // *** NEW ***
 
     // Error message displays
     const loginError = document.getElementById('login-error');
@@ -29,10 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Links to switch between forms
     const showRegisterLink = document.getElementById('show-register-link');
-    const showLoginLink = document.getElementById('show-login-link');
+    const showLoginLink =.getElementById('show-login-link');
     
     // --- CHAT ELEMENTS ---
-    const userEmailDisplay = document.getElementById('user-email-display');
+    const userDisplay = document.getElementById('user-display'); // *** RENAMED ***
     const messagesContainer = document.getElementById('messages-container');
     const messageForm = document.getElementById('message-form');
     const messageInput = document.getElementById('message-input');
@@ -50,10 +51,12 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.classList.add('hidden');
         loginError.classList.add('hidden');
         registerError.classList.add('hidden');
+        // Clear forms
         loginEmail.value = '';
         loginPassword.value = '';
         registerEmail.value = '';
         registerPassword.value = '';
+        registerDisplayName.value = ''; // *** NEW ***
     };
 
     // --- Switch between Login and Register ---
@@ -74,13 +77,24 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const email = registerEmail.value;
         const password = registerPassword.value;
-        const { data, error } = await _supabase.auth.signUp({ email, password });
+        const displayName = registerDisplayName.value; // *** NEW ***
+        
+        // *** NEW: Send display_name in the options ***
+        const { data, error } = await _supabase.auth.signUp({ 
+            email, 
+            password,
+            options: {
+                data: {
+                    display_name: displayName
+                }
+            }
+        });
 
         if (error) {
             registerError.textContent = error.message;
             registerError.classList.remove('hidden');
         } else {
-            alert('Success! Check your email to confirm your account.'); // Or not, if you turned it off
+            alert('Success! Check your email to confirm your account.');
             registerForm.classList.add('hidden');
             loginForm.classList.remove('hidden');
         }
@@ -111,60 +125,61 @@ document.addEventListener('DOMContentLoaded', () => {
         if (session && session.user) {
             // User is signed in!
             currentUser = session.user; // Save the user
-            userEmailDisplay.textContent = `(Logged in as: ${currentUser.email})`;
+            
+            // *** NEW: Get display name from user_metadata ***
+            const displayName = currentUser.user_metadata.display_name || currentUser.email;
+            userDisplay.textContent = `(Logged in as: ${displayName})`; // *** UPDATED ***
+            
             showApp();
             
-            // --- NEW: Load messages and start polling ---
-            loadMessages(); // Load messages once
-            
-            // Stop any old timer
+            loadMessages(); 
             if (messagePolling) clearInterval(messagePolling); 
-            
-            // Start a new timer to check for messages every 3 seconds
             messagePolling = setInterval(loadMessages, 3000); 
             
         } else {
             // User is signed out.
             currentUser = null;
-            userEmailDisplay.textContent = '';
+            userDisplay.textContent = ''; // *** UPDATED ***
             showAuth();
             
-            // --- NEW: Stop the timer when logged out ---
             if (messagePolling) clearInterval(messagePolling);
-            messagesContainer.innerHTML = ''; // Clear messages from screen
+            messagesContainer.innerHTML = ''; 
         }
     });
     
     // --- Handle Sending a Message ---
     messageForm.addEventListener('submit', async (e) => {
-        e.preventDefault(); // Stop the page from reloading
+        e.preventDefault(); 
         
-        const content = messageInput.value; // Get the text
+        const content = messageInput.value;
+        
+        // *** NEW: Get display name for the message ***
+        const displayName = currentUser.user_metadata.display_name || currentUser.email;
         
         if (content && currentUser) {
-            // Send the message to the 'messages' table in Supabase
+            // *** NEW: Send display_name along with the message ***
             const { error } = await _supabase.from('messages').insert({
                 content: content,
-                user_email: currentUser.email
+                user_email: currentUser.email,
+                display_name: displayName 
             });
             
             if (error) {
                 console.error('Error sending message:', error.message);
             } else {
-                messageInput.value = ''; // Clear the input box
-                // We'll just wait for the poll to pick up the new message
+                messageInput.value = ''; 
             }
         }
     });
     
     // --- A helper function to display a single message ---
-    // (This is the same as before)
     const displayMessage = (message) => {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
         
         const userEmailElement = document.createElement('strong');
-        userEmailElement.textContent = `${message.user_email}: `; 
+        // *** NEW: Show display_name, or fall back to email ***
+        userEmailElement.textContent = `${message.display_name || message.user_email}: `; 
         
         const contentElement = document.createElement('span');
         contentElement.textContent = message.content;
@@ -177,31 +192,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Load all messages ---
     const loadMessages = async () => {
         
-        // Get all messages from the 'messages' table
         const { data: messages, error } = await _supabase
             .from('messages')
             .select('*')
-            .order('created_at', { ascending: true }); // Get oldest first
+            .order('created_at', { ascending: true }); 
             
         if (error) {
             console.error('Error loading messages:', error.message);
         } else {
-            // --- NEW: Only redraw if needed ---
-            // A simple check: if the number of messages is different
-            // This stops the chat from "flashing" every 3 seconds
             const currentMessageCount = messagesContainer.children.length;
             if (messages.length !== currentMessageCount) {
                 
-                messagesContainer.innerHTML = ''; // Clear old messages
-                messages.forEach(displayMessage); // Display each message
+                messagesContainer.innerHTML = ''; 
+                messages.forEach(displayMessage); 
                 
-                // Auto-scroll to the bottom
                 messagesContainer.scrollTop = messagesContainer.scrollHeight;
             }
         }
     };
-    
-    // --- REMOVED ---
-    // The listenForMessages() function has been completely removed.
 
 });
