@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Links to switch between forms
     const showRegisterLink = document.getElementById('show-register-link');
+    // *** THIS IS THE LINE THAT WAS BREAKING ***
     const showLoginLink = document.getElementById('show-login-link');
     
     // --- CHAT ELEMENTS ---
@@ -129,7 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
             
             showApp();
             
-            loadMessages(); 
+            loadMessages(); M
             if (messagePolling) clearInterval(messagePolling); 
             messagePolling = setInterval(loadMessages, 3000); 
             
@@ -166,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // --- A helper function to display a single message ---
-    // *** THIS IS THE ONLY SECTION THAT CHANGED ***
+    // *** THIS INCLUDES THE TIMESTAMP LOGIC ***
     const displayMessage = (message) => {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
