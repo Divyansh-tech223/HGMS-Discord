@@ -1,11 +1,231 @@
 /*
-  NEW: Timestamp and Message Styling
+  This is the complete CSS for the login forms and the app.
+*/
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #36393f;
+    color: #dcddde;
+}
+
+/* Part 1: The Authentication Screen 
+*/
+#auth-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #36393f;
+}
+
+.auth-box {
+    background-color: #2f3136;
+    padding: 32px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px 0 rgba(0,0,0,0.2);
+    width: 400px;
+    box-sizing: border-box; /* Important */
+}
+
+.auth-form h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.auth-form input {
+    width: 100%;
+    background-color: #202225;
+    border: 1px solid #202225;
+    border-radius: 3px;
+    color: #dcddde;
+    font-size: 16px;
+    padding: 12px;
+    margin-bottom: 20px;
+    box-sizing: border-box; /* Important */
+}
+
+.auth-form input:focus {
+    border-color: #7289da;
+    outline: none;
+}
+
+.auth-form button {
+    width: 100%;
+    background-color: #5865f2; /* New Discord Purple */
+    border: none;
+    border-radius: 3px;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 12px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.auth-form button:hover {
+    background-color: #4752c4;
+}
+
+.auth-toggle-link {
+    font-size: 14px;
+    color: #72767d;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.auth-toggle-link span {
+    color: #00a8fc;
+    cursor: pointer;
+}
+
+.auth-toggle-link span:hover {
+    text-decoration: underline;
+}
+
+.auth-error {
+    color: #f04747; /* Discord Red */
+    background-color: rgba(240, 71, 71, 0.1);
+    border: 1px solid #f04747;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Part 2: The Main App Layout 
+*/
+.app-layout {
+    display: flex;
+    height: 100vh;
+}
+
+.server-list {
+    width: 72px;
+    background-color: #202225;
+    padding-top: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.server-icon {
+    width: 48px;
+    height: 48px;
+    background-color: #36393f;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    transition: all 0.2s;
+}
+
+.server-icon:hover {
+    border-radius: 16px;
+    background-color: #5865f2;
+}
+
+#logout-button {
+    width: 48px;
+    height: 48px;
+    background-color: #f04747;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: auto; /* Pushes to bottom */
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #fff;
+    border: none;
+    transition: all 0.2s;
+}
+
+#logout-button:hover {
+    border-radius: 16px;
+}
+
+.channel-area {
+    width: 240px;
+    background-color: #2f3136;
+    display: flex;
+    flex-direction: column;
+}
+
+.server-name {
+    padding: 20px;
+    font-weight: 600;
+    color: #fff;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.channel-list {
+    padding: 12px;
+}
+
+.channel {
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    color: #8e9297;
+}
+
+.channel.active {
+    background-color: #40444b;
+    color: #fff;
+}
+
+.channel:hover {
+    background-color: #3a3d43;
+    color: #dcddde;
+}
+
+.chat-area {
+    flex-grow: 1; /* Takes up remaining space */
+    background-color: #36393f;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    height: 60px;
+    padding: 0 20px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: #fff;
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 20px;
+    overflow-y: auto; /* Makes messages scrollable */
+}
+
+/*
+  Timestamp and Message Styling
 */
 .message {
     margin-bottom: 12px;
     line-height: 1.4;
     
-    /* NEW: This helps align the timestamp */
+    /* This helps align the timestamp */
     display: flex;
     align-items: baseline;
     flex-wrap: wrap; /* Allows name/message to wrap on small screens */
@@ -21,4 +241,22 @@
     color: #a3a6aa; /* Discord's light gray */
     margin-left: 8px;
     font-weight: 300;
+}
+
+
+.chat-input-box {
+    padding: 20px;
+    background-color: #36393f;
+}
+
+.chat-input-box input {
+    width: 100%;
+    background-color: #40444b;
+    border: none;
+    border-radius: 8px;
+    color: #dcddde;
+    font-size: 15px;
+    padding: 14px;
+    box-sizing: border-box; /* Important */
+    outline: none;
 }
