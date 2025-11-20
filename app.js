@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginPassword = document.getElementById('login-password');
     const registerEmail = document.getElementById('register-email');
     const registerPassword = document.getElementById('register-password');
-    const registerDisplayName = document.getElementById('register-display-name'); // *** NEW ***
+    const registerDisplayName = document.getElementById('register-display-name'); 
 
     // Error message displays
     const loginError = document.getElementById('login-error');
@@ -30,11 +30,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Links to switch between forms
     const showRegisterLink = document.getElementById('show-register-link');
-    // *** THIS IS THE FIX ***
     const showLoginLink = document.getElementById('show-login-link');
     
     // --- CHAT ELEMENTS ---
-    const userDisplay = document.getElementById('user-display'); // *** RENAMED ***
+    const userDisplay = document.getElementById('user-display'); 
     const messagesContainer = document.getElementById('messages-container');
     const messageForm = document.getElementById('message-form');
     const messageInput = document.getElementById('message-input');
@@ -57,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loginPassword.value = '';
         registerEmail.value = '';
         registerPassword.value = '';
-        registerDisplayName.value = ''; // *** NEW ***
+        registerDisplayName.value = ''; 
     };
 
     // --- Switch between Login and Register ---
@@ -78,9 +77,8 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         const email = registerEmail.value;
         const password = registerPassword.value;
-        const displayName = registerDisplayName.value; // *** NEW ***
+        const displayName = registerDisplayName.value; 
         
-        // *** NEW: Send display_name in the options ***
         const { data, error } = await _supabase.auth.signUp({ 
             email, 
             password,
@@ -124,12 +122,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Listen for Auth State Changes ---
     _supabase.auth.onAuthStateChange((_event, session) => {
         if (session && session.user) {
-            // User is signed in!
-            currentUser = session.user; // Save the user
+            currentUser = session.user; 
             
-            // *** NEW: Get display name from user_metadata ***
             const displayName = currentUser.user_metadata.display_name || currentUser.email;
-            userDisplay.textContent = `(Logged in as: ${displayName})`; // *** UPDATED ***
+            userDisplay.textContent = `(Logged in as: ${displayName})`; 
             
             showApp();
             
@@ -138,9 +134,8 @@ document.addEventListener('DOMContentLoaded', () => {
             messagePolling = setInterval(loadMessages, 3000); 
             
         } else {
-            // User is signed out.
             currentUser = null;
-            userDisplay.textContent = ''; // *** UPDATED ***
+            userDisplay.textContent = ''; 
             showAuth();
             
             if (messagePolling) clearInterval(messagePolling);
@@ -153,12 +148,9 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault(); 
         
         const content = messageInput.value;
-        
-        // *** NEW: Get display name for the message ***
         const displayName = currentUser.user_metadata.display_name || currentUser.email;
         
         if (content && currentUser) {
-            // *** NEW: Send display_name along with the message ***
             const { error } = await _supabase.from('messages').insert({
                 content: content,
                 user_email: currentUser.email,
@@ -174,19 +166,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // --- A helper function to display a single message ---
+    // *** THIS IS THE ONLY SECTION THAT CHANGED ***
     const displayMessage = (message) => {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
         
-        const userEmailElement = document.createElement('strong');
-        // *** NEW: Show display_name, or fall back to email ***
-        userEmailElement.textContent = `${message.display_name || message.user_email}: `; 
+        // --- 1. Create the timestamp element ---
+        const timestampElement = document.createElement('span');
+        timestampElement.classList.add('timestamp');
+        // Convert the ugly string into a readable time
+        const date = new Date(message.created_at);
+        timestampElement.textContent = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
         
+        // --- 2. Create the display name element ---
+        const userElement = document.createElement('strong');
+        userElement.textContent = `${message.display_name || message.user_email}: `; 
+        
+        // --- 3. Create the message content element ---
         const contentElement = document.createElement('span');
         contentElement.textContent = message.content;
         
-        messageElement.appendChild(userEmailElement);
+        // --- 4. Add them to the page in the right order ---
+        messageElement.appendChild(userElement);
         messageElement.appendChild(contentElement);
+        messageElement.appendChild(timestampElement); // Add timestamp last
+        
         messagesContainer.appendChild(messageElement);
     };
     
