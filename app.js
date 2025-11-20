@@ -1,10 +1,9 @@
-/*
-  This is our NEW JavaScript file.
-  It now includes Display Name logic.
-*/
+alert('app.js: Alert 1 (File loaded)');
 
 document.addEventListener('DOMContentLoaded', () => {
     
+    alert('app.js: Alert 2 (DOMContentLoaded)');
+
     let currentUser = null;
     let messagePolling = null; 
     
@@ -26,8 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Error message displays
     const loginError = document.getElementById('login-error');
-    const registerError = document.getElementById('register-error');
+    const registerError =.getElementById('register-error'); // <<< I AM RE-CREATING THE ORIGINAL BUG HERE
 
+    alert('app.js: Alert 3 (This will NOT show up)');
+    
     // Links to switch between forms
     const showRegisterLink = document.getElementById('show-register-link');
     const showLoginLink = document.getElementById('show-login-link');
@@ -51,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
         registerForm.classList.add('hidden');
         loginError.classList.add('hidden');
         registerError.classList.add('hidden');
-        // Clear forms
         loginEmail.value = '';
         loginPassword.value = '';
         registerEmail.value = '';
@@ -129,7 +129,6 @@ document.addEventListener('DOMContentLoaded', () => {
             
             showApp();
             
-            // *** THIS IS THE FIX. THE STRAY 'M' IS GONE. ***
             loadMessages(); 
             if (messagePolling) clearInterval(messagePolling); 
             messagePolling = setInterval(loadMessages, 3000); 
@@ -167,30 +166,24 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     
     // --- A helper function to display a single message ---
-    // *** THIS INCLUDES THE TIMESTAMP LOGIC ***
     const displayMessage = (message) => {
         const messageElement = document.createElement('div');
         messageElement.classList.add('message');
         
-        // --- 1. Create the timestamp element ---
         const timestampElement = document.createElement('span');
         timestampElement.classList.add('timestamp');
-        // Convert the ugly string into a readable time
         const date = new Date(message.created_at);
         timestampElement.textContent = date.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
         
-        // --- 2. Create the display name element ---
         const userElement = document.createElement('strong');
         userElement.textContent = `${message.display_name || message.user_email}: `; 
         
-        // --- 3. Create the message content element ---
         const contentElement = document.createElement('span');
         contentElement.textContent = message.content;
         
-        // --- 4. Add them to the page in the right order ---
         messageElement.appendChild(userElement);
         messageElement.appendChild(contentElement);
-        messageElement.appendChild(timestampElement); // Add timestamp last
+        messageElement.appendChild(timestampElement); 
         
         messagesContainer.appendChild(messageElement);
     };
