@@ -1,3 +1,4 @@
+alert('Config file loaded!');
 // This is config.js
 
 const supabaseUrl = "https://npcoundkqshdqdckmhst.supabase.co";
