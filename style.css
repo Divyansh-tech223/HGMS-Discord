@@ -1,225 +1,24 @@
-/* --- STYLES FOR LOGIN --- */
-
-/* This will hide elements */
-.hidden {
-    display: none !important;
-}
-
-/* Centering the login form */
-#auth-container {
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #36393f;
-}
-
-.auth-box {
-    width: 90%;
-    max-width: 400px;
-    background-color: #2f3136;
-    padding: 32px;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    color: #fff;
-    font-family: Arial, sans-serif;
-}
-
-.auth-box h1 {
-    text-align: center;
-    margin-bottom: 24px;
-    font-size: 24px;
-}
-
-.auth-form input {
-    width: 100%;
-    background-color: #40444b;
-    border: 1px solid #202225;
-    border-radius: 4px;
-    padding: 12px;
-    color: #dcddde;
-    box-sizing: border-box; /* Important! */
-    margin-bottom: 16px;
-    font-size: 16px;
-}
-
-.auth-form button {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 4px;
-    background-color: #7289da; /* Discord "blurple" */
-    color: #fff;
-    font-size: 16px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.auth-form button:hover {
-    background-color: #677bc4;
-}
-
-.auth-toggle-link {
-    text-align: center;
-    margin-top: 20px;
-    color: #72767d;
-    font-size: 14px;
-}
-
-.auth-toggle-link span {
-    color: #7289da;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/* Simple error message style */
-.auth-error {
-    color: #f04747; /* Discord red */
-    text-align: center;
-    margin-bottom: 12px;
-    font-size: 14px;
-}
-
-/* --- STYLES FOR MAIN APP --- */
-
-/* Basic reset to make it fill the screen */
-body, html {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    font-family: Arial, sans-serif;
-    background-color: #36393f; /* Discord's main dark background */
-    color: #dcddde;
-}
-
-/* This creates the main 3-column layout using Flexbox */
-.app-layout {
-    display: flex;
-    height: 100vh; /* Full viewport height */
-}
-
-/* 1. Server List (Far Left) */
-.server-list {
-    width: 70px;
-    background-color: #202225; /* Server list background */
-    padding-top: 12px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    position: relative; /* Added this for the logout button */
-}
-.server-icon {
-    width: 50px;
-    height: 50px;
-    background-color: #36393f;
-    border-radius: 50%; /* Makes it a circle */
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-    cursor: pointer;
-    transition: border-radius 0.2s;
-}
-.server-icon:hover {
-    background-color: #7289da; /* Discord's "blurple" color */
-    border-radius: 15px; /* The "squircle" effect on hover */
-}
-
-/* 2. Channel Area (Middle Left) */
-.channel-area {
-    width: 240px;
-    background-color: #2f3136; /* Channel list background */
-    display: flex;
-    flex-direction: column;
-}
-.server-name {
-    padding: 20px;
-    font-weight: bold;
-    font-size: 1.1em;
-    border-bottom: 1px solid #202225;
-}
-.channel-list {
-    padding: 20px 10px;
-    flex-grow: 1;
-}
-.channel {
-    padding: 8px 10px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.channel:before {
-    content: '#';
-    margin-right: 8px;
-    color: #72767d;
-}
-.channel:hover {
-    background-color: #3a3c43;
-    color: #fff;
-}
-.channel.active { /* A class for the "selected" channel */
-    background-color: #40444b;
-    color: #fff;
-}
-
-/* 3. Chat Area (Main Right) */
-.chat-area {
-    flex-grow: 1; /* This makes it take up all remaining space */
-    background-color: #36393f;
-    display: flex;
-    flex-direction: column;
-}
-.chat-header {
-    padding: 20px;
-    font-weight: bold;
-    border-bottom: 1px solid #202225;
-}
-.chat-messages {
-    flex-grow: 1;
-    padding: 20px;
-    overflow-y: auto; /* Lets you scroll messages */
-}
+/*
+  NEW: Timestamp and Message Styling
+*/
 .message {
-    margin-bottom: 15px;
+    margin-bottom: 12px;
+    line-height: 1.4;
+    
+    /* NEW: This helps align the timestamp */
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap; /* Allows name/message to wrap on small screens */
 }
+
 .message strong {
     color: #fff;
-    margin-right: 5px;
-}
-.chat-input-box {
-    padding: 20px;
-}
-.chat-input-box input {
-    width: 100%;
-    background-color: #40444b;
-    border: none;
-    border-radius: 8px;
-    padding: 12px;
-    color: #dcddde;
-    box-sizing: border-box; /* Fixes a padding issue */
-}
-.chat-input-box input::placeholder {
-    color: #72767d;
+    margin-right: 8px;
 }
 
-/* --- A new "Logout" button for the app --- */
-#logout-button {
-    position: absolute;
-    bottom: 15px;
-    left: 15px;
-    width: 40px;
-    height: 40px;
-    background-color: #f04747;
-    border: none;
-    border-radius: 50%;
-    color: #fff;
-    font-weight: bold;
-    font-size: 12px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+.message .timestamp {
+    font-size: 0.75rem; /* 12px */
+    color: #a3a6aa; /* Discord's light gray */
+    margin-left: 8px;
+    font-weight: 300;
 }
