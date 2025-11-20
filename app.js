@@ -30,7 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Links to switch between forms
     const showRegisterLink = document.getElementById('show-register-link');
-    // *** THIS IS THE LINE THAT WAS BREAKING ***
     const showLoginLink = document.getElementById('show-login-link');
     
     // --- CHAT ELEMENTS ---
@@ -130,7 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             showApp();
             
-            loadMessages(); M
+            // *** THIS IS THE FIX. THE STRAY 'M' IS GONE. ***
+            loadMessages(); 
             if (messagePolling) clearInterval(messagePolling); 
             messagePolling = setInterval(loadMessages, 3000); 
             
